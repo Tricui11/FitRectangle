@@ -130,6 +130,7 @@ namespace FitRectangle
                 var colorRGB = (Color)ColorConverter.ConvertFromString(color);
                 _colorsDic.Add(color, colorRGB);
                 ColorsSettings.Add(new ColorSettingsViewModel(colorRGB));
+                _brushesDic.Add(colorRGB, new SolidColorBrush(colorRGB));
             }
         }
 
@@ -141,16 +142,7 @@ namespace FitRectangle
 
                 if (Root != null)
                 {
-                    foreach (var rect in Root.SecondaryRectangles)
-                    {
-                        if (!_brushesDic.ContainsKey(rect.Color))
-                        {
-                            _brushesDic.Add(rect.Color, new SolidColorBrush(rect.Color));
-                        }
-
-                        Shapes.Add(CreateRectangleShape(rect));
-                    }
-
+                    Root.SecondaryRectangles.ForEach(x => Shapes.Add(CreateRectangleShape(x)));
                     Shapes.Add(CreateRectangleShape(Root.MainRectangle, true));
                 }
             }
