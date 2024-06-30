@@ -1,13 +1,13 @@
 ﻿using FitRectangle;
-using Newtonsoft.Json;
 using System.Collections.ObjectModel;
 using System.IO;
-using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using Rectangle = FitRectangle.Rectangle;
-using Point = FitRectangle.Point;
+using System.Windows.Controls;
+using Newtonsoft.Json.Linq;
+using System;
 
 public class MainViewModel : ViewModelBase
 {
@@ -16,6 +16,9 @@ public class MainViewModel : ViewModelBase
     private ObservableCollection<Rectangle> _filteredRectangles;
     private ObservableCollection<Shape> _shapes;
     private double _scale;
+    private RectangleManager _rectangleManager;
+    private bool _IgnoreOutOfBoundsRectangles;
+    private Dictionary<string, Color> ColorsDic = new();
 
     public Rectangle MainRectangle
     {
@@ -68,6 +71,19 @@ public class MainViewModel : ViewModelBase
         }
     }
 
+    public bool IgnoreOutOfBoundsRectangles
+    {
+        get => _IgnoreOutOfBoundsRectangles;
+        set
+        {
+            _IgnoreOutOfBoundsRectangles = value;
+            OnPropertyChanged();
+            FilterAndDrawRectangles();
+        }
+    }
+
+    public ObservableCollection<ColorSettingsViewModel> ColorsSettings { get; } = new();
+
     public ICommand LoadCommand { get; }
     public ICommand ZoomInCommand { get; }
     public ICommand ZoomOutCommand { get; }
@@ -80,7 +96,8 @@ public class MainViewModel : ViewModelBase
         SecondaryRectangles = new ObservableCollection<Rectangle>();
         FilteredRectangles = new ObservableCollection<Rectangle>();
         Shapes = new ObservableCollection<Shape>();
-        Scale = 18;
+        Scale = 11.6;
+        FillColors();
     }
 
     private void LoadData()
@@ -89,37 +106,52 @@ public class MainViewModel : ViewModelBase
         var root = LoadRectangles(filePath);
         MainRectangle = root.MainRectangle;
         SecondaryRectangles = new ObservableCollection<Rectangle>(root.SecondaryRectangles);
-        AdjustMainRectangle(MainRectangle, SecondaryRectangles);
-        FilteredRectangles = new ObservableCollection<Rectangle>(FilterRectangles(MainRectangle, SecondaryRectangles, new List<string> { "green" }));
-        DrawRectangles();
+        _rectangleManager = new RectangleManager(MainRectangle, SecondaryRectangles.ToList(), LogAction);
+        _rectangleManager.UpdateMainRectangle(IgnoreOutOfBoundsRectangles, ColorsSettings);
+        FilterAndDrawRectangles();
     }
 
     public Root LoadRectangles(string filePath)
     {
         var jsonContent = File.ReadAllText(filePath);
-        var root = JsonConvert.DeserializeObject<Root>(jsonContent);
-        return root;
+        var jObject = JObject.Parse(jsonContent);
+
+        var mainRectangle = jObject["mainRectangle"].ToObject<Rectangle>();
+        mainRectangle.Color = ColorsDic[jObject["mainRectangle"]["color"].ToString()];
+
+        var secondaryRectangles = new List<Rectangle>();
+        foreach (var secondaryRectangle in jObject["secondaryRectangles"])
+        {
+            var rect = secondaryRectangle.ToObject<Rectangle>();
+            rect.Color = ColorsDic[secondaryRectangle["color"].ToString()];
+            secondaryRectangles.Add(rect);
+        }
+
+        return new Root
+        {
+            MainRectangle = mainRectangle,
+            SecondaryRectangles = secondaryRectangles
+        };
     }
 
-    public void AdjustMainRectangle(Rectangle mainRectangle, ObservableCollection<Rectangle> secondaryRectangles)
+    private void FillColors()
     {
-        var minX = secondaryRectangles.Min(r => r.BotLeft.X);
-        var minY = secondaryRectangles.Min(r => r.BotLeft.Y);
-        var maxX = secondaryRectangles.Max(r => r.TopRight.X);
-        var maxY = secondaryRectangles.Max(r => r.TopRight.Y);
-
-        mainRectangle.BotLeft = new Point(minX, minY);
-        mainRectangle.TopRight = new Point(maxX, maxY);
+        List<string> colors = new() { "Red", "Green", "Blue", "Yellow", "Orange", "Purple", "Pink", "Brown", "Black", "Gray" };
+        foreach (var color in colors)
+        {
+            var colorRGB = (Color)ColorConverter.ConvertFromString(color);
+            ColorsDic.Add(color, colorRGB);
+            ColorsSettings.Add(new ColorSettingsViewModel(colorRGB));
+        }
     }
 
-    public List<Rectangle> FilterRectangles(Rectangle mainRectangle, ObservableCollection<Rectangle> secondaryRectangles, List<string> colors)
+    private void FilterAndDrawRectangles()
     {
-        var filtered = secondaryRectangles
-       //     .Where(r => colors.Contains(r.Color))
-            .Where(r => r.BotLeft.X >= mainRectangle.BotLeft.X && r.BotLeft.Y >= mainRectangle.BotLeft.Y)
-            .Where(r => r.TopRight.X <= mainRectangle.TopRight.X && r.TopRight.Y <= mainRectangle.TopRight.Y)
-            .ToList();
-        return filtered;
+        if (_rectangleManager != null)
+        {
+            FilteredRectangles = new ObservableCollection<Rectangle>(_rectangleManager.FilterRectangles(ColorsDic.Select(x => x.Value)));
+            DrawRectangles();
+        }
     }
 
     private void DrawRectangles()
@@ -128,19 +160,6 @@ public class MainViewModel : ViewModelBase
 
         if (MainRectangle != null)
         {
-            // Draw main rectangle
-            var mainRect = new System.Windows.Shapes.Rectangle
-            {
-                Stroke = Brushes.Black,
-                StrokeThickness = 2,
-                Width = (MainRectangle.TopRight.X - MainRectangle.BotLeft.X) * Scale,
-                Height = (MainRectangle.TopRight.Y - MainRectangle.BotLeft.Y) * Scale
-            };
-            Canvas.SetLeft(mainRect, MainRectangle.BotLeft.X * Scale);
-            Canvas.SetTop(mainRect, MainRectangle.BotLeft.Y * Scale);
-            Shapes.Add(mainRect);
-
-            // Draw secondary rectangles
             foreach (var rect in FilteredRectangles)
             {
                 var shape = new System.Windows.Shapes.Rectangle
@@ -155,18 +174,22 @@ public class MainViewModel : ViewModelBase
                 Canvas.SetTop(shape, rect.BotLeft.Y * Scale);
                 Shapes.Add(shape);
             }
+            var mainRect = new System.Windows.Shapes.Rectangle
+            {
+                Stroke = Brushes.Black,
+                StrokeThickness = 2,
+                Width = (MainRectangle.TopRight.X - MainRectangle.BotLeft.X) * Scale,
+                Height = (MainRectangle.TopRight.Y - MainRectangle.BotLeft.Y) * Scale
+            };
+            Canvas.SetLeft(mainRect, MainRectangle.BotLeft.X * Scale);
+            Canvas.SetTop(mainRect, MainRectangle.BotLeft.Y * Scale);
+            Shapes.Add(mainRect);
         }
     }
 
-    private Brush GetBrushFromColor(string color)
+    private Brush GetBrushFromColor(Color color)
     {
-        return color.ToLower() switch
-        {
-            "red" => Brushes.Red,
-            "green" => Brushes.Green,
-            "blue" => Brushes.Blue,
-            _ => Brushes.Gray,
-        };
+        return new SolidColorBrush(color);
     }
 
     private void ZoomIn()
@@ -177,5 +200,11 @@ public class MainViewModel : ViewModelBase
     private void ZoomOut()
     {
         Scale /= 1.1;
+    }
+
+    private void LogAction(string message)
+    {
+        // Implement logging functionality here
+        Console.WriteLine(message);
     }
 }

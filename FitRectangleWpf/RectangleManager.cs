@@ -1,4 +1,6 @@
-﻿namespace FitRectangle
+﻿using System.Windows.Media;
+
+namespace FitRectangle
 {
     public class RectangleManager
     {
@@ -13,12 +15,22 @@
             LogAction = logAction;
         }
 
-        public void UpdateMainRectangle()
+        public void UpdateMainRectangle(bool ignoreOutside, IEnumerable<ColorSettingsViewModel> colorsSettings)
         {
-            double minX = SecondaryRectangles.Min(r => r.BotLeft.X);
-            double minY = SecondaryRectangles.Min(r => r.BotLeft.Y);
-            double maxX = SecondaryRectangles.Max(r => r.TopRight.X);
-            double maxY = SecondaryRectangles.Max(r => r.TopRight.Y);
+            var SecondaryRectanglesToCalculate = SecondaryRectangles
+                .Where(r => colorsSettings.Where(x => !x.IsIgnore).Select(x => x.Color).Contains(r.Color));
+            double minX = !ignoreOutside
+                ? SecondaryRectanglesToCalculate.Min(r => r.BotLeft.X)
+                : SecondaryRectanglesToCalculate.Where(x => x.BotLeft.X >= MainRectangle.BotLeft.X).Min(r => r.BotLeft.X);
+            double minY = !ignoreOutside
+                ? SecondaryRectanglesToCalculate.Min(r => r.BotLeft.Y)
+                : SecondaryRectanglesToCalculate.Where(x => x.BotLeft.Y >= MainRectangle.BotLeft.Y).Min(r => r.BotLeft.Y);
+            double maxX = !ignoreOutside
+                ? SecondaryRectanglesToCalculate.Max(r => r.TopRight.X)
+                : SecondaryRectanglesToCalculate.Where(x => x.TopRight.X <= MainRectangle.TopRight.X).Max(r => r.TopRight.X);
+            double maxY = !ignoreOutside
+                ? SecondaryRectanglesToCalculate.Max(r => r.TopRight.Y)
+                : SecondaryRectanglesToCalculate.Where(x => x.TopRight.Y <= MainRectangle.TopRight.Y).Max(r => r.TopRight.Y);
 
             MainRectangle.BotLeft = new Point(minX, minY);
             MainRectangle.TopRight = new Point(maxX, maxY);
@@ -26,17 +38,13 @@
             LogAction($"Main rectangle updated: BotLeft({minX}, {minY}), TopRight({maxX}, {maxY})");
         }
 
-        public void FilterRectangles(bool ignoreOutside, List<string> colors, bool includeColors)
+        public List<Rectangle> FilterRectangles(IEnumerable<Color> colors)
         {
-            var filteredRectangles = SecondaryRectangles.Where(r =>
-                (!ignoreOutside || (r.BotLeft.X >= MainRectangle.BotLeft.X && r.TopRight.X <= MainRectangle.TopRight.X &&
-                                    r.BotLeft.Y >= MainRectangle.BotLeft.Y && r.TopRight.Y <= MainRectangle.TopRight.Y)) &&
-                (includeColors ? colors.Contains(r.Color) : !colors.Contains(r.Color))
-            ).ToList();
+            var filteredRectangles = SecondaryRectangles
+                .ToList();
 
-            SecondaryRectangles = filteredRectangles;
-
-            LogAction($"Filtered {SecondaryRectangles.Count} rectangles");
+            LogAction($"Filtered {filteredRectangles.Count} rectangles");
+            return filteredRectangles;
         }
     }
 }

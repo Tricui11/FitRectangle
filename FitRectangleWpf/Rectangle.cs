@@ -1,12 +1,14 @@
-﻿namespace FitRectangle
+﻿using System.Windows.Media;
+
+namespace FitRectangle
 {
     public class Rectangle
     {
         public Point BotLeft { get; set; }
         public Point TopRight { get; set; }
-        public string Color { get; set; }
+        public Color Color { get; set; }
 
-        public Rectangle(Point botLeft, Point topRight, string color)
+        public Rectangle(Point botLeft, Point topRight, Color color)
         {
             BotLeft = botLeft;
             TopRight = topRight;
