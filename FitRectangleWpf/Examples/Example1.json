@@ -1,0 +1,70 @@
+{
+  "mainRectangle": {
+    "botLeft": {
+      "x": -10.0,
+      "y": -10.0
+    },
+    "topRight": {
+      "x": 50.0,
+      "y": 60.0
+    },
+    "color": "Green"
+  },
+  "secondaryRectangles": [
+    {
+      "botLeft": {
+        "x": 0.0,
+        "y": 5.0
+      },
+      "topRight": {
+        "x": 18.0,
+        "y": 21.0
+      },
+      "color": "Green"
+    },
+    {
+      "botLeft": {
+        "x": 29.0,
+        "y": 11.0
+      },
+      "topRight": {
+        "x": 48.0,
+        "y": 34.0
+      },
+      "color": "Green"
+    },
+    {
+      "botLeft": {
+        "x": 3.0,
+        "y": 18.0
+      },
+      "topRight": {
+        "x": 22.0,
+        "y": 45.0
+      },
+      "color": "Green"
+    },
+    {
+      "botLeft": {
+        "x": 18.0,
+        "y": 30.0
+      },
+      "topRight": {
+        "x": 42.0,
+        "y": 50.0
+      },
+      "color": "Green"
+    },
+    {
+      "botLeft": {
+        "x": 6.0,
+        "y": 0.0
+      },
+      "topRight": {
+        "x": 35.0,
+        "y": 16.0
+      },
+      "color": "Green"
+    }
+  ]
+}

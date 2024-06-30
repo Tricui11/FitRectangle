@@ -1,18 +1,18 @@
 ﻿using System.Windows;
 using System.Windows.Input;
 
-namespace RectangleApp
+namespace FitRectangle
 {
     public partial class MainWindow : Window
     {
-        private Point _origin;
-        private Point _start;
-
         public MainWindow()
         {
             InitializeComponent();
             DataContext = new MainViewModel();
         }
+
+        private System.Windows.Point _origin;
+        private System.Windows.Point _start;
 
         private void Canvas_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
