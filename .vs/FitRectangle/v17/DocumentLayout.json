@@ -1,0 +1,96 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\Furer\\Desktop\\FitRectangle\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{F415D539-CA7B-4276-98A0-E32E2556A6EC}|FitRectangleWpf\\FitRectangleWpf.csproj|c:\\users\\furer\\desktop\\fitrectangle\\fitrectanglewpf\\rectangles.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{F415D539-CA7B-4276-98A0-E32E2556A6EC}|FitRectangleWpf\\FitRectangleWpf.csproj|solutionrelative:fitrectanglewpf\\rectangles.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F415D539-CA7B-4276-98A0-E32E2556A6EC}|FitRectangleWpf\\FitRectangleWpf.csproj|c:\\users\\furer\\desktop\\fitrectangle\\fitrectanglewpf\\mainviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F415D539-CA7B-4276-98A0-E32E2556A6EC}|FitRectangleWpf\\FitRectangleWpf.csproj|solutionrelative:fitrectanglewpf\\mainviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F415D539-CA7B-4276-98A0-E32E2556A6EC}|FitRectangleWpf\\FitRectangleWpf.csproj|c:\\users\\furer\\desktop\\fitrectangle\\fitrectanglewpf\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{F415D539-CA7B-4276-98A0-E32E2556A6EC}|FitRectangleWpf\\FitRectangleWpf.csproj|solutionrelative:fitrectanglewpf\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 7,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:129:0:{13b12e3e-c1b4-4539-9371-4fe9a0d523fc}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:129:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{13b12e3e-c1b4-4539-9371-4fe9a0d523fc}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:131:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:130:0:{13b12e3e-c1b4-4539-9371-4fe9a0d523fc}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "rectangles.json",
+              "DocumentMoniker": "C:\\Users\\Furer\\Desktop\\FitRectangle\\FitRectangleWpf\\rectangles.json",
+              "RelativeDocumentMoniker": "FitRectangleWpf\\rectangles.json",
+              "ToolTip": "C:\\Users\\Furer\\Desktop\\FitRectangle\\FitRectangleWpf\\rectangles.json",
+              "RelativeToolTip": "FitRectangleWpf\\rectangles.json",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABQAAAAVAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2024-06-30T15:04:36.648Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "MainViewModel.cs",
+              "DocumentMoniker": "C:\\Users\\Furer\\Desktop\\FitRectangle\\FitRectangleWpf\\MainViewModel.cs",
+              "RelativeDocumentMoniker": "FitRectangleWpf\\MainViewModel.cs",
+              "ToolTip": "C:\\Users\\Furer\\Desktop\\FitRectangle\\FitRectangleWpf\\MainViewModel.cs",
+              "RelativeToolTip": "FitRectangleWpf\\MainViewModel.cs",
+              "ViewState": "AQIAAF4AAAAAAAAAAAAAwHUAAAAJAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-06-23T15:54:08.354Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "MainWindow.xaml",
+              "DocumentMoniker": "C:\\Users\\Furer\\Desktop\\FitRectangle\\FitRectangleWpf\\MainWindow.xaml",
+              "RelativeDocumentMoniker": "FitRectangleWpf\\MainWindow.xaml",
+              "ToolTip": "C:\\Users\\Furer\\Desktop\\FitRectangle\\FitRectangleWpf\\MainWindow.xaml",
+              "RelativeToolTip": "FitRectangleWpf\\MainWindow.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2024-06-23T16:09:43.267Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
