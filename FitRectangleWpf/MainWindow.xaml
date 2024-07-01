@@ -21,8 +21,8 @@
                 <CheckBox IsChecked="{Binding IgnoreOutOfBoundsRectangles}" VerticalAlignment="Center" />
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                <RadioButton Content="Логирование в файл " IsChecked="{Binding IsFileLogging}" />
-                <RadioButton Content="Логирование в консоль" IsChecked="{Binding IsConsoleLogging}" />
+                <RadioButton Content="File Logging " IsChecked="{Binding IsFileLogging}" />
+                <RadioButton Content="Console Logging" IsChecked="{Binding IsConsoleLogging}" />
             </StackPanel>
             <Button Content="Calculate" Command="{Binding CalculateCommand}" Width="100" Background="OrangeRed" />
         </StackPanel>
