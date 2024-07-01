@@ -2,11 +2,8 @@
 {
     public class RectangleManager
     {
-        private readonly ILogger _logger;
-
-        public RectangleManager(Root root, ILogger logger)
+        public RectangleManager(Root root)
         {
-            _logger = logger;
             Root = root;
         }
 
@@ -32,8 +29,6 @@
 
             Root.MainRectangle.BotLeft = new Point(minX, minY);
             Root.MainRectangle.TopRight = new Point(maxX, maxY);
-            
-            _logger.Log($"Main rectangle updated: BotLeft({minX}, {minY}), TopRight({maxX}, {maxY})");
         }
     }
 }

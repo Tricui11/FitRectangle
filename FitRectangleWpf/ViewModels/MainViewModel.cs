@@ -16,7 +16,6 @@ namespace FitRectangle
         private RectangleManager _rectangleManager;
         private bool _ignoreOutOfBoundsRectangles;
         private bool _isFileLogging;
-        private bool _isConsoleLogging;
         private readonly Dictionary<string, Color> _colorsDic = new();
         private readonly Dictionary<Color, Brush> _brushesDic = new();
 
@@ -66,24 +65,18 @@ namespace FitRectangle
             {
                 _isFileLogging = value;
                 OnPropertyChanged();
-                if (value)
-                {
-                    _logger = new FileLogger("log.txt");
-                }
+                UpdateLogger();
             }
         }
 
         public bool IsConsoleLogging
         {
-            get => _isConsoleLogging;
+            get => !_isFileLogging;
             set
             {
-                _isConsoleLogging = value;
+                _isFileLogging = !value;
                 OnPropertyChanged();
-                if (value)
-                {
-                    _logger = new ConsoleLogger();
-                }
+                UpdateLogger();
             }
         }
         public ObservableCollection<ColorSettingsViewModel> ColorsSettings { get; } = new();
@@ -123,8 +116,11 @@ namespace FitRectangle
         {
             try
             {
-                _rectangleManager = new RectangleManager(Root, _logger);
+                _rectangleManager = new RectangleManager(Root);
                 _rectangleManager.UpdateMainRectangle(IgnoreOutOfBoundsRectangles, ColorsSettings);
+                _logger.Log($"Main rectangle updated: " +
+                    $"BotLeft({Root.MainRectangle.BotLeft.X}, {Root.MainRectangle.BotLeft.Y}), " +
+                    $"TopRight({Root.MainRectangle.TopRight.X}, {Root.MainRectangle.TopRight.Y})");
                 DrawRectangles();
             }
             catch (Exception ex)
@@ -202,5 +198,7 @@ namespace FitRectangle
         private void ZoomIn() => Scale *= 1.1;
 
         private void ZoomOut() => Scale /= 1.1;
+
+        private void UpdateLogger() => _logger = LoggerFactory.CreateLogger(IsFileLogging, "log.txt");
     }
 }
