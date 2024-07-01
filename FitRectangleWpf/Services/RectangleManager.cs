@@ -2,14 +2,15 @@
 {
     public class RectangleManager
     {
-        public RectangleManager(Root root, Action<string> logAction)
+        private readonly ILogger _logger;
+
+        public RectangleManager(Root root, ILogger logger)
         {
+            _logger = logger;
             Root = root;
-            LogAction = logAction;
         }
 
         public Root Root { get; private set; }
-        private readonly Action<string> LogAction;
 
         public void UpdateMainRectangle(bool ignoreOutside, IEnumerable<IColorSetting> colorsSettings)
         {
@@ -31,8 +32,8 @@
 
             Root.MainRectangle.BotLeft = new Point(minX, minY);
             Root.MainRectangle.TopRight = new Point(maxX, maxY);
-
-            LogAction($"Main rectangle updated: BotLeft({minX}, {minY}), TopRight({maxX}, {maxY})");
+            
+            _logger.Log($"Main rectangle updated: BotLeft({minX}, {minY}), TopRight({maxX}, {maxY})");
         }
     }
 }

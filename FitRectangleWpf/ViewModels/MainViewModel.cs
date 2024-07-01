@@ -10,12 +10,15 @@ namespace FitRectangle
 {
     public class MainViewModel : ViewModelBase
     {
+        private ILogger _logger;
         private Root _root;
         private double _scale;
         private RectangleManager _rectangleManager;
-        private bool _IgnoreOutOfBoundsRectangles;
-        private Dictionary<string, Color> _colorsDic = new();
-        private Dictionary<Color, Brush> _brushesDic = new();
+        private bool _ignoreOutOfBoundsRectangles;
+        private bool _isFileLogging;
+        private bool _isConsoleLogging;
+        private readonly Dictionary<string, Color> _colorsDic = new();
+        private readonly Dictionary<Color, Brush> _brushesDic = new();
 
         public MainViewModel()
         {
@@ -24,6 +27,7 @@ namespace FitRectangle
             ZoomInCommand = new RelayCommand(ZoomIn);
             ZoomOutCommand = new RelayCommand(ZoomOut);
             Scale = 5.6;
+            IsConsoleLogging = true;
             FillColors();
         }
 
@@ -48,11 +52,38 @@ namespace FitRectangle
         }
         public bool IgnoreOutOfBoundsRectangles
         {
-            get => _IgnoreOutOfBoundsRectangles;
+            get => _ignoreOutOfBoundsRectangles;
             set
             {
-                _IgnoreOutOfBoundsRectangles = value;
+                _ignoreOutOfBoundsRectangles = value;
                 OnPropertyChanged();
+            }
+        }
+        public bool IsFileLogging
+        {
+            get => _isFileLogging;
+            set
+            {
+                _isFileLogging = value;
+                OnPropertyChanged();
+                if (value)
+                {
+                    _logger = new FileLogger("log.txt");
+                }
+            }
+        }
+
+        public bool IsConsoleLogging
+        {
+            get => _isConsoleLogging;
+            set
+            {
+                _isConsoleLogging = value;
+                OnPropertyChanged();
+                if (value)
+                {
+                    _logger = new ConsoleLogger();
+                }
             }
         }
         public ObservableCollection<ColorSettingsViewModel> ColorsSettings { get; } = new();
@@ -67,7 +98,7 @@ namespace FitRectangle
         {
             try
             {
-                var openFileDialog = new OpenFileDialog
+                OpenFileDialog openFileDialog = new()
                 {
                     Title = "Select JSON File",
                     Filter = "JSON Files (*.json)|*.json|All Files (*.*)|*.*"
@@ -77,11 +108,14 @@ namespace FitRectangle
                     string filePath = openFileDialog.FileName;
                     Root = LoadRectangles(filePath);
                     DrawRectangles();
+                    _logger.Log($"Файл {filePath} успешно загружен." +
+                        $" Main rectangle set at: BotLeft({Root.MainRectangle.BotLeft.X}, {Root.MainRectangle.BotLeft.Y}), " +
+                        $"TopRight({Root.MainRectangle.TopRight.X}, {Root.MainRectangle.TopRight.Y})");
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error reading rectangles: {ex.Message}");
+                _logger.Log($"Error reading rectangles: {ex.Message}");
             }
         }
 
@@ -89,13 +123,13 @@ namespace FitRectangle
         {
             try
             {
-                _rectangleManager = new RectangleManager(Root, LogAction);
+                _rectangleManager = new RectangleManager(Root, _logger);
                 _rectangleManager.UpdateMainRectangle(IgnoreOutOfBoundsRectangles, ColorsSettings);
                 DrawRectangles();
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error updating main rectangle: {ex.Message}");
+                _logger.Log($"Error updating main rectangle: {ex.Message}");
             }
         }
 
@@ -148,7 +182,7 @@ namespace FitRectangle
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error drawing rectangles: {ex.Message}");
+                _logger.Log($"Error drawing rectangles: {ex.Message}");
             }
         }
 
@@ -168,10 +202,5 @@ namespace FitRectangle
         private void ZoomIn() => Scale *= 1.1;
 
         private void ZoomOut() => Scale /= 1.1;
-
-        private void LogAction(string message)
-        {
-            Console.WriteLine(message);
-        }
     }
 }

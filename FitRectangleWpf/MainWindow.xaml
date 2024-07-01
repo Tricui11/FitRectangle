@@ -1,7 +1,7 @@
 ﻿<Window x:Class="FitRectangle.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Rectangle App" Height="530" Width="520"
+        Title="Rectangle App" Height="550" Width="620"
         Background="AliceBlue">
     <Window.Resources>
         <Style TargetType="Button">
@@ -19,6 +19,10 @@
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                 <Label Content="Ignore out of bounds rectangles" />
                 <CheckBox IsChecked="{Binding IgnoreOutOfBoundsRectangles}" VerticalAlignment="Center" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <RadioButton Content="Логирование в файл " IsChecked="{Binding IsFileLogging}" />
+                <RadioButton Content="Логирование в консоль" IsChecked="{Binding IsConsoleLogging}" />
             </StackPanel>
             <Button Content="Calculate" Command="{Binding CalculateCommand}" Width="100" Background="OrangeRed" />
         </StackPanel>
